@@ -8,15 +8,14 @@
   - [TOC](#toc)
   - [Project Description](#project-description)
     - [Introduction](#introduction)
-      - [layout of the project](#layout-of-the-project)
-    - [Entities in thee postgresql database](#entities-in-the-postgresql-database)
+      - [Layout of the project](#layout-of-the-project)
+    - [Entities in the postgresql database](#entities-in-the-postgresql-database)
     - [The Functionality of the application](#the-functionality-of-the-application)
   - [Output](#output)
-    - [How it looks](#how-it-looks)
-      - [Personal](#personal)
-      - [Group](#group)
-      - [Friends](#friends)
-      - [Activity](#activity)
+    - [Personal](#personal)
+    - [Group](#group)
+    - [Friends](#friends)
+    - [Activity](#activity)
 
 ## Project Description
 
@@ -25,7 +24,7 @@
 This application makes it easy to split bills with friends and family. This package organizes all the shared expenses and IOUs in one place so that every user can see who they owe.
 Postgresql database is used as the database for the project as it's cloud database, it enables to build applications faster, handle highly diverse data types, and manage applications more efficiently at scale. This project uses ReactJS as a frontend framework and NodeJs for server-side programming.
 
-#### Layout of the projet
+#### Layout of the project
 
 ![layout_project](layout_project.PNG)
 
