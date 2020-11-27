@@ -447,7 +447,7 @@ module.exports = (db) => {
             return ejs.compile(html)(datas);
           };
           try {
-            const browser = await puppeteer.launch();
+            const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
             const page = await browser.newPage();
             const content = await compile(data);
             await page.setContent(content);
