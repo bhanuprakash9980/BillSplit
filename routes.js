@@ -41,7 +41,7 @@ module.exports = (app, allModels) => {
   app.get('/blitt/login', userControllerCallbacks.login);
   app.post('/blitt/login', userControllerCallbacks.loginPost);
   app.get('/blitt/register', userControllerCallbacks.register);
-
+  app.get('/blitt/statement', userControllerCallbacks.userTransaction);
   app.post('/blitt/register', userControllerCallbacks.registerPost);
   app.get('/blitt/logout', userControllerCallbacks.logout);
   app.get('/blitt/create_group', groupControllerCallbacks.createGroup);

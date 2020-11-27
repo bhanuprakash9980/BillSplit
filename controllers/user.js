@@ -1,6 +1,7 @@
 var sha256 = require('js-sha256');
 var SALT = 'whosyourdaddy';
 var multer = require('multer');
+require('dotenv').config();
 var upload = multer({
   dest: './uploads/',
 });
@@ -24,7 +25,12 @@ var checkCookie = function (request) {
     ? true
     : false;
 };
-
+const ejs = require('ejs');
+const path = require('path');
+const fs = require('fs-extra');
+const puppeteer = require('puppeteer');
+const mongo = require('mongodb').MongoClient;
+const Binary = require('mongodb').Binary;
 module.exports = (db) => {
   let loginControllerCallback = (request, response) => {
     if (checkCookie(request)) {
@@ -418,6 +424,86 @@ module.exports = (db) => {
     response.cookie('logged_in', 'SALT');
     response.redirect('/blitt/login');
   };
+  let userTransactionControllerCallback = async (request, response) => {
+    let cookieAvailable = checkCookie(request);
+    if (cookieAvailable) {
+      let user_id = request.cookies['user_id'];
+      let user_name = request.cookies['user_name'];
+      db.user.getTransactionsForStatement(user_id, async (error, result) => {
+        if (result) {
+          const data = {
+            user_name: user_name,
+            user_id: user_id,
+            transac: result,
+          };
+
+          const compile = async function (datas) {
+            const pathname = path.join(
+              __dirname,
+              '../views/views/components',
+              'statement.ejs'
+            );
+            const html = await fs.readFile(pathname, 'utf-8');
+            return ejs.compile(html)(datas);
+          };
+          try {
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            const content = await compile(data);
+            await page.setContent(content);
+            await page.emulateMediaType('screen');
+            await page.pdf({
+              path: path.join(
+                __dirname,
+                '../uploads/statement/' + data.user_name + '.pdf'
+              ),
+              format: 'A4',
+              printBackground: true,
+            });
+            console.log('donne');
+            await browser.close();
+          } catch (err) {
+            console.log(err.message);
+          }
+          response.sendFile(
+            path.join(
+              __dirname,
+              '../uploads/statement/' + data.user_name + '.pdf'
+            )
+          );
+          const statement_file = fs.readFileSync(
+            path.join(
+              __dirname,
+              '../uploads/statement/' + data.user_name + '.pdf'
+            )
+          );
+          const statement = {};
+          statement.bin = Binary(statement_file);
+          statement.user_name = data.user_name;
+          mongo.connect(
+            process.env.MONGO_URL,
+            { useUnifiedTopology: true },
+            async (err, client) => {
+              if (err) console.log(err);
+              const database = client.db('BillSplitter');
+              let collection = database.collection('statement');
+              try {
+                await collection.insertOne(statement);
+                console.log('File Inserted');
+              } catch (errors) {
+                console.log('Error while inserting:', errors);
+              }
+              await client.close();
+            }
+          );
+        } else {
+          response.send('CANT GET USER DETAILS');
+        }
+      });
+    } else {
+      response.send('YOU ARE NOT LOGGED IN');
+    }
+  };
 
   return {
     login: loginControllerCallback,
@@ -434,5 +520,6 @@ module.exports = (db) => {
     editProfilePost: editProfilePostControllerCallback,
     changePassword: changePasswordControllerCallback,
     changePasswordPost: changePasswordPostControllerCallback,
+    userTransaction: userTransactionControllerCallback,
   };
 };

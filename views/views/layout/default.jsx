@@ -31,13 +31,19 @@ class Default extends React.Component {
 
           </div>*/}
           <ul class="navbar-nav">
+          {/* <li class="nav-item active ">
+                <a class="nav-link" href="/statement">Statement Of Transactions<span class="sr-only">(current)</span></a>
+              </li> */}
               <li class="nav-item active ">
                 <a class="nav-link" href={url}>{loginOrLogout}<span class="sr-only">(current)</span></a>
               </li>
+             
             </ul>
 
         </nav>
-        <div className="user-banner">Hey {this.props.user_name}</div>
+        <div className="user-banner">Hey {this.props.user_name} 
+                <a class="nav-link" href="/blitt/statement">Statement Of Transactions<span class="sr-only">(current)</span></a>
+               </div>
         <div className="main-container">
 
             <div className="main-content">{this.props.children}</div>
