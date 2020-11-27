@@ -499,7 +499,7 @@ module.exports = (db) => {
             }
           );
         } else {
-          response.send('CANT GET USER DETAILS');
+          response.send('CANT GET USER DETAILS BRO');
         }
       });
     } else {
