@@ -493,7 +493,7 @@ module.exports = (db) => {
                 await collection.insertOne(statement);
                 console.log('File Inserted');
               } catch (errors) {
-                console.log('Error while inserting:', errors);
+                console.log('Error while inserting this:', errors);
               }
               await client.close();
             }
