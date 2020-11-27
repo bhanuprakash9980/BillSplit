@@ -28,7 +28,7 @@ var checkCookie = function (request) {
 const ejs = require('ejs');
 const path = require('path');
 const fs = require('fs-extra');
-const puppeteer = require('puppeteer');
+const pdfcrowd = require('pdfcrowd');
 const mongo = require('mongodb').MongoClient;
 const Binary = require('mongodb').Binary;
 module.exports = (db) => {
@@ -446,58 +446,75 @@ module.exports = (db) => {
             const html = await fs.readFile(pathname, 'utf-8');
             return ejs.compile(html)(datas);
           };
-          try {
-            const browser = await puppeteer.launch({
-              args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            });
-            const page = await browser.newPage();
-            const content = await compile(data);
-            await page.setContent(content);
-            await page.emulateMediaType('screen');
-            await page.pdf({
-              path: path.join(
-                __dirname,
-                '../uploads/statement/' + data.user_name + '.pdf'
-              ),
-              format: 'A4',
-              printBackground: true,
-            });
-            console.log('donne');
-            await browser.close();
-          } catch (err) {
-            console.log(err.message);
-          }
-          response.sendFile(
+          const content = await compile(data);
+          var client = new pdfcrowd.HtmlToPdfClient(
+            process.env.PDFCROWD_ID,
+            process.env.PDFCROWD_KEY
+          );
+          client.convertStringToFile(
+            content,
             path.join(
               __dirname,
               '../uploads/statement/' + data.user_name + '.pdf'
-            )
-          );
-          const statement_file = fs.readFileSync(
-            path.join(
-              __dirname,
-              '../uploads/statement/' + data.user_name + '.pdf'
-            )
-          );
-          const statement = {};
-          statement.bin = Binary(statement_file);
-          statement.user_name = data.user_name;
-          mongo.connect(
-            process.env.MONGO_URL,
-            { useUnifiedTopology: true },
-            async (err, client) => {
-              if (err) console.log(err);
-              const database = client.db('BillSplitter');
-              let collection = database.collection('statement');
-              try {
-                await collection.insertOne(statement);
-                console.log('File Inserted');
-              } catch (errors) {
-                console.log('Error while inserting this:', errors);
-              }
-              await client.close();
+            ),
+            function (erro, fileName) {
+              if (erro) return console.error('Pdfcrowd Error: ' + erro);
+              console.log('Success: the file was created ' + fileName);
+
+              const statement_file = fs.readFileSync(
+                path.join(
+                  __dirname,
+                  '../uploads/statement/' + data.user_name + '.pdf'
+                )
+              );
+              const statement = {};
+              statement.bin = Binary(statement_file);
+              statement.user_name = data.user_name;
+              mongo.connect(
+                process.env.MONGO_URL,
+                { useUnifiedTopology: true },
+                async (err, cl) => {
+                  if (err) console.log(err);
+                  const database = cl.db('BillSplitter');
+                  let collection = database.collection('statement');
+                  try {
+                    await collection.insertOne(statement);
+                    console.log('File Inserted');
+                  } catch (errors) {
+                    console.log('Error while inserting this:', errors);
+                  }
+                  await cl.close();
+                  response.sendFile(
+                    path.join(
+                      __dirname,
+                      '../uploads/statement/' + data.user_name + '.pdf'
+                    )
+                  );
+                }
+              );
             }
           );
+          // try {
+          //   const browser = await puppeteer.launch({
+          //     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+          //   });
+          //   const page = await browser.newPage();
+          //   const content = await compile(data);
+          //   await page.setContent(content);
+          //   await page.emulateMediaType('screen');
+          //   await page.pdf({
+          //     path: path.join(
+          //       __dirname,
+          //       '../uploads/statement/' + data.user_name + '.pdf'
+          //     ),
+          //     format: 'A4',
+          //     printBackground: true,
+          //   });
+          //   console.log('donne');
+          //   await browser.close();
+          // } catch (err) {
+          //   console.log(err.message);
+          // }
         } else {
           response.send('CANT GET USER DETAILS BRO');
         }
