@@ -56,16 +56,16 @@ The views of the application for personal,groups,friends and activities
 
 ## Personal
 
-![personal](https://res.cloudinary.com/dusrowd5k/image/upload/v1605532320/WhatsApp_Image_2020-11-16_at_6.38.53_PM_3_iyo4pb.jpg)
+![personal](https://res.cloudinary.com/dusrowd5k/image/upload/v1613371016/WhatsApp_Image_2021-02-15_at_12.04.00_PM_lrxyqx.jpg)
 
 ## Group
 
-![group](https://res.cloudinary.com/dusrowd5k/image/upload/v1605532320/WhatsApp_Image_2020-11-16_at_6.38.53_PM_2_vlzhij.jpg)
+![group](https://res.cloudinary.com/dusrowd5k/image/upload/v1613371003/Group_dlalwm.jpg)
 
 ## Friends
 
-![friends](https://res.cloudinary.com/dusrowd5k/image/upload/v1605532320/WhatsApp_Image_2020-11-16_at_6.38.53_PM_1_efzres.jpg)
+![friends](https://res.cloudinary.com/dusrowd5k/image/upload/v1613371003/friends_hqcvak.jpg)
 
 ## Activity
 
-![activity](https://res.cloudinary.com/dusrowd5k/image/upload/v1605532320/WhatsApp_Image_2020-11-16_at_6.38.53_PM_j5ld2g.jpg)
+![activity](https://res.cloudinary.com/dusrowd5k/image/upload/v1613371017/WhatsApp_Image_2021-02-15_at_12.04.17_PM_ryygpj.jpg)
