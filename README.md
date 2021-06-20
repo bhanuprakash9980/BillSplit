@@ -1,6 +1,6 @@
 # BillSplitter
 
-#### visit https://billsplit.debugentity.me/ to register and use the application
+#### visit https://billsplit.bhanuprakash.tech/ to register and use the application
 
 ## TOC
 
